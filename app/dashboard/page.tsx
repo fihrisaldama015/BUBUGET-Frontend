@@ -24,12 +24,14 @@ async function Dashboard() {
   const user = await verifyToken();
 
   const stats: Stats = await fetch(
-    `http://127.0.0.1:8080/api/user/${user.user_id}/stats`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${user.user_id}/stats`,
+    // `http://localhost:8080/api/user/${user.user_id}/stats`,
     { cache: "no-cache" }
   ).then((res) => res.json());
 
   const transaction: AllTransaction = await fetch(
-    `http://127.0.0.1:8080/api/user/${user.user_id}/transaction`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${user.user_id}/transaction`,
+    // `http://localhost:8080/api/user/${user.user_id}/transaction`,
     { cache: "no-cache" }
   ).then((res) => res.json());
 
