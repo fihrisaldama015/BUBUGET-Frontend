@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
-import { cookies } from "next/headers";
 
-interface TokenPayload {
+export interface TokenPayload {
   user_id: string;
   user_name: string;
   email: string;
@@ -9,11 +8,10 @@ interface TokenPayload {
   cookie?: string;
 }
 
-const verifyToken = async (): Promise<TokenPayload> => {
+const verifyToken = async (token: string): Promise<TokenPayload> => {
   try {
     // const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    const cookie = cookies();
-    const tokenFromCookie: string = cookie.get("token")?.value || "";
+    const tokenFromCookie: string = token;
     let decoded: TokenPayload = { user_id: "", user_name: "", email: "" };
     decoded = jwt.verify(tokenFromCookie, "awokawok") as TokenPayload;
     decoded.cookie = tokenFromCookie;

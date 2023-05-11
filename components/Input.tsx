@@ -1,5 +1,3 @@
-"use client";
-
 type InputType = {
   value: string;
   onChange: (value: string) => void;

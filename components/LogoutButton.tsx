@@ -1,5 +1,3 @@
-"use client";
-
 import { signOut, getAuth } from "firebase/auth";
 import { FirebaseError } from "firebase/app";
 import { useRouter } from "next/navigation";
