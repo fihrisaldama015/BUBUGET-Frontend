@@ -29,7 +29,8 @@ const LoginGoogle = () => {
       const token = credential?.idToken;
       const name = payload?.user?.displayName;
       const { data } = await axios.post<LoginGooglePayload>(
-        "http://localhost:8080/api/user/login",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/login`,
+        // "http://localhost:8080/api/user/login",
         {
           token,
           name,

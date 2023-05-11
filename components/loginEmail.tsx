@@ -85,7 +85,8 @@ const LoginEmail = () => {
     }
 
     const { data } = await axios.post<LoginEmailPayload>(
-      "http://localhost:8080/api/user/login_email",
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/login_email`,
+      // "http://localhost:8080/api/user/login_email",
       { uid }
     );
     setCookie("token", data.token, { maxAge: 60 * 60 });

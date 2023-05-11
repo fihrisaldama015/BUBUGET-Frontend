@@ -55,7 +55,8 @@ const SignupEmail = () => {
 
       const { email: user_email, displayName: name, uid } = payload.user;
       const { data } = await axios.post<SignupEmailPayload>(
-        "http://localhost:8080/api/user/signup_email",
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/signup_email`,
+        // "http://localhost:8080/api/user/signup_email",
         { uid, email: user_email, name }
       );
       if (data.status === 200) {
