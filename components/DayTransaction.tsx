@@ -1,16 +1,36 @@
 import { AllTransaction } from "@/pages/dashboard";
+import { useEffect, useState } from "react";
 
-function HomeTransaction({ transaction }: { transaction: AllTransaction }) {
+function DayTransaction({ transaction }: { transaction: AllTransaction }) {
+  const [dayTransaction, setDayTransaction] = useState<AllTransaction>([]);
+
+  useEffect(() => {
+    const today = new Date();
+    const filteredDayTransaction: AllTransaction = transaction.filter(
+      (data) => {
+        const dataDate = new Date(data.date);
+        if (
+          dataDate.getDate() == today.getDate() &&
+          dataDate.getMonth() == today.getMonth()
+        ) {
+          return data;
+        }
+      }
+    );
+    setDayTransaction(filteredDayTransaction);
+  }, []);
   return (
     <div className="flex flex-col gap-4 p-6 rounded-2xl bg-white">
-      {transaction ? (
-        transaction.map((data, id) => (
+      {dayTransaction.length === 0 && (
+        <div className="py-8 text-slate-800 text-center text-sm font-normal">
+          No transaction today
+        </div>
+      )}
+      {dayTransaction ? (
+        dayTransaction.map((data, id) => (
           <div key={id}>
             <div className="p-6 ring-1 ring-emerald-900/10 flex relative rounded-xl bg-white shadow-md">
               <div>
-                {/* <p className="text-xs text-slate-800 font-medium">
-                  {data.date}
-                </p> */}
                 <p className="text-lg text-slate-700 font-bold">
                   {data.category_id !== null ? data.category_name : "Income"}
                 </p>
@@ -40,4 +60,4 @@ function HomeTransaction({ transaction }: { transaction: AllTransaction }) {
   );
 }
 
-export default HomeTransaction;
+export default DayTransaction;
