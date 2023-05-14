@@ -1,9 +1,14 @@
 import { GetServerSidePropsContext } from "next";
 import cookies from "next-cookies";
 import { verifyToken } from "@/utils/jwt";
-import HomeTransaction from "@/components/HomeTransaction";
 import LogoutButton from "@/components/LogoutButton";
 import { useState } from "react";
+import Head from "next/head";
+import DateString from "@/components/DateString";
+import UserInfo from "@/components/UserInfo";
+import UserStats from "@/components/UserStats";
+import DayTransaction from "@/components/DayTransaction";
+import MonthTransaction from "@/components/MonthTransaction";
 
 type Stats = {
   balance: number;
@@ -11,9 +16,9 @@ type Stats = {
   expense: number;
 };
 
-type Transaction = {
+export type Transaction = {
   transaction_id: number;
-  user_id: number;
+  user_id: string;
   transaction_type: "income" | "expense";
   amount: string;
   category_id: number | null;
@@ -33,22 +38,9 @@ function Dashboard({
   stats: Stats;
   userName: string;
 }) {
+  const [mode, setMode] = useState<"day" | "month">("day");
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
-  const montName = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "Mei",
-    "Jun",
-    "Jul",
-    "Agu",
-    "Sep",
-    "Okt",
-    "Nov",
-    "Des",
-  ];
 
   const addMonth = () => {
     if (month === 11) {
@@ -76,23 +68,14 @@ function Dashboard({
     }
     return true;
   };
+
   return (
     <div className="p-4 flex flex-col gap-4">
+      <Head>
+        <title>Dashboard | Bubuget</title>
+      </Head>
       <div className="px-4 flex gap-4">
-        <div className="p-6 flex-1 flex flex-col gap-2 bg-white rounded-2xl shadow-sm">
-          <p className="pb-2 text-base font-medium">
-            👋 Hi, <b>{userName}</b>
-          </p>
-          <p className="text-sm text-slate-700">💵 Balance</p>
-          <div className="flex items-center gap-1">
-            <p className="font-medium text-slate-800">
-              Rp. {stats.balance > 0 ? "+" : ""}
-            </p>
-            <span className="font-bold text-3xl text-slate-800">
-              {stats.balance}
-            </span>
-          </div>
-        </div>
+        <UserInfo userName={userName} balance={stats.balance} />
         <div className="p-4 gap-4 flex flex-col justify-center">
           <button
             className={`p-1 bg-emerald-900/10 rounded-lg ${
@@ -105,9 +88,7 @@ function Dashboard({
           >
             &uarr;
           </button>
-          <p className="font-bold text-lg">
-            {montName[month]} {year}
-          </p>
+          <DateString month={month} year={year} />
           <button
             className="p-1 bg-emerald-900/10 rounded-lg"
             onClick={() => subMonth()}
@@ -116,30 +97,34 @@ function Dashboard({
           </button>
         </div>
       </div>
-      <div className="mx-4 p-6 bg-white rounded-2xl shadow-sm">
-        <p className="pb-2 text-sm font-medium">Total Pemasukan</p>
-        <div className="flex items-center gap-1">
-          <p className="font-medium text-slate-800">
-            Rp. {stats.income > 0 ? "+" : ""}
-          </p>
-          <span className="font-bold text-3xl text-slate-800">
-            {stats.income}
-          </span>
-        </div>
-        <div className="flex gap-2 mt-2 justify-center">
-          <div className="w-2 h-2 rounded-full bg-red-500"></div>
-          <div className="w-2 h-2 rounded-full bg-slate-200"></div>
-        </div>
-      </div>
+      <UserStats income={stats.income} expense={0} />
       <div className="flex bg-emerald-700 ring-1 ring-emerald-900/20 rounded-full shadow-sm">
-        <div className="flex-1 px-4 py-2 bg-white rounded-full text-center">
-          Harian
+        <div
+          onClick={() => setMode("day")}
+          className={`flex-1 px-4 py-2 text-center cursor-pointer transition-all ${
+            mode === "day"
+              ? "bg-white rounded-full"
+              : "bg-emerald-700 rounded-l-full"
+          }`}
+        >
+          Daily
         </div>
-        <div className="flex-1 px-4 py-2 bg-emerald-700 rounded-r-full text-center">
-          Mingguan
+        <div
+          onClick={() => setMode("month")}
+          className={`flex-1 px-4 py-2 text-center cursor-pointer transition-all ${
+            mode === "month"
+              ? "bg-white rounded-full"
+              : "bg-emerald-700 rounded-r-full"
+          }`}
+        >
+          Monthly
         </div>
       </div>
-      <HomeTransaction transaction={transaction} />
+      {mode === "day" ? (
+        <DayTransaction transaction={transaction} />
+      ) : (
+        <MonthTransaction transaction={transaction} month={month} />
+      )}
       <LogoutButton />
     </div>
   );
@@ -149,12 +134,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { token } = cookies(context);
   const tokenFromCookie: string = token || "not found";
   const user = await verifyToken(tokenFromCookie);
-  if (!user) {
+  if (user.error?.length! > 0) {
     return {
       redirect: {
-        destination: "/auth/login",
         permanent: false,
+        destination: "/auth/login",
       },
+      props: {},
     };
   }
 
