@@ -1,9 +1,13 @@
 import Link from "next/link";
 import style from "../styles/home.module.css";
+import Head from "next/head";
 
 export default function Home() {
   return (
     <main>
+      <Head>
+        <title>Bubuget | College Money Management App</title>
+      </Head>
       <div className={style.splash}>
         <div className={style.splash1}>
           <h4>WELCOME BUBUGU..!</h4>
