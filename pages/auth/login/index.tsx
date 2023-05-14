@@ -1,10 +1,14 @@
 import Link from "next/link";
 import LoginEmail from "@/components/loginEmail";
 import LoginGoogle from "@/components/LoginGoogle";
+import Head from "next/head";
 
 function Login() {
   return (
-    <div className="sm:p-16 p-4 flex flex-col gap-8 justify-center items-center h-full">
+    <div className="sm:px-16 py-16 px-4 flex flex-col gap-8 justify-center items-center h-full">
+      <Head>
+        <title>Login | Bubuget</title>
+      </Head>
       <h1 className="text-4xl font-extrabold">Log in</h1>
       <div className="p-8 bg-emerald-900/20 rounded-2xl flex flex-col items-center">
         <LoginGoogle />
