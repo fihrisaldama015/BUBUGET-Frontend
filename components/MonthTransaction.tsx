@@ -1,4 +1,5 @@
 import { AllTransaction, Transaction } from "@/pages/dashboard";
+import { RUPIAH } from "@/utils/format";
 import { useEffect, useState } from "react";
 
 type MonthTransaction = Record<string, Transaction[]>;
@@ -28,8 +29,8 @@ function MonthTransaction({
       return accumulator - Number(object[property as keyof Transaction]);
     }, 0);
 
-    if (total < 0) return "-Rp." + Math.abs(total);
-    return "Rp" + total;
+    if (total < 0) return "-Rp." + RUPIAH.format(Math.abs(total));
+    return "Rp" + RUPIAH.format(total);
   }
 
   useEffect(() => {
@@ -86,7 +87,7 @@ function MonthTransaction({
                   >
                     <span>
                       {data.transaction_type === "income" ? "+" : "-"}Rp
-                      {data.amount}
+                      {RUPIAH.format(Number(data.amount))}
                     </span>
                   </div>
                 </div>
