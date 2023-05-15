@@ -9,6 +9,7 @@ import UserInfo from "@/components/UserInfo";
 import UserStats from "@/components/UserStats";
 import DayTransaction from "@/components/DayTransaction";
 import MonthTransaction from "@/components/MonthTransaction";
+import Image from "next/image";
 
 type Stats = {
   balance: number;
@@ -78,22 +79,28 @@ function Dashboard({
         <UserInfo userName={userName} balance={stats.balance} />
         <div className="p-4 gap-4 flex flex-col justify-center">
           <button
-            className={`p-1 bg-emerald-900/10 rounded-lg ${
+            className={`p-1 flex justify-center rounded-lg bg-emerald-900/10  transition-all ${
               validateMonth(month)
-                ? "cursor-pointer"
+                ? "cursor-pointer hover:bg-emerald-900/30"
                 : "cursor-not-allowed bg-transparent"
             }`}
             disabled={!validateMonth(month)}
             onClick={() => addMonth()}
           >
-            &uarr;
+            <Image
+              src="/arrowDown.svg"
+              style={{ transform: "rotate(180deg)" }}
+              width={24}
+              height={24}
+              alt="arrow"
+            />
           </button>
           <DateString month={month} year={year} />
           <button
-            className="p-1 bg-emerald-900/10 rounded-lg"
+            className="p-1 flex justify-center rounded-lg bg-emerald-900/10 hover:bg-emerald-900/30 transition-all"
             onClick={() => subMonth()}
           >
-            &darr;
+            <Image src="/arrowDown.svg" width={24} height={24} alt="arrow" />
           </button>
         </div>
       </div>
