@@ -1,4 +1,5 @@
 import { AllTransaction } from "@/pages/dashboard";
+import { RUPIAH } from "@/utils/format";
 import { useEffect, useState } from "react";
 
 function DayTransaction({ transaction }: { transaction: AllTransaction }) {
@@ -47,7 +48,7 @@ function DayTransaction({ transaction }: { transaction: AllTransaction }) {
               >
                 <span>
                   {data.transaction_type === "income" ? "+" : "-"}Rp
-                  {data.amount}
+                  {RUPIAH.format(Number(data.amount))}
                 </span>
               </div>
             </div>
