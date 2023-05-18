@@ -13,7 +13,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       className={`${open_sans.className} flex min-h-screen flex-col bg-[#D0E5E0]`}
     >
       <Navbar />
-      <div className="h-full">{children}</div>
+      <div className="relative h-full flex-grow bg-[#D0E5E0]">{children}</div>
     </div>
   );
 }
