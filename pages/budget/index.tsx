@@ -23,6 +23,7 @@ function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
   };
 
   const deleteBudget = async (id: number) => {
+    if (!window.confirm("Are you sure want to delete this budget?")) return;
     try {
       const { data } = await axios.delete(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/budget/${id}`
