@@ -87,7 +87,7 @@ const LoginEmail = () => {
       // "http://localhost:8080/api/user/login_email",
       { uid }
     );
-    setCookie("token", data.token, { maxAge: 60 * 60 });
+    setCookie("token", data.token, { maxAge: 60 * 60 * 24 });
     if (data.status === 200) {
       router.push("/dashboard");
     } else if (data.status === 404) {
