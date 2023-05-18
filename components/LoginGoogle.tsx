@@ -34,7 +34,7 @@ const LoginGoogle = () => {
           name,
         }
       );
-      setCookie("token", data.token, { maxAge: 60 * 60 });
+      setCookie("token", data.token, { maxAge: 60 * 60 * 24 });
       router.push("/dashboard");
     } catch (err) {
       console.log(err);
