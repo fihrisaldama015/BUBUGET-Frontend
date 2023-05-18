@@ -1,11 +1,13 @@
 import { GetServerSidePropsContext } from "next";
 import cookies from "next-cookies";
+import { useRouter } from "next/router";
 import { verifyToken } from "@/utils/jwt";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "react-chartjs-2";
 import Image from "next/image";
 import { RUPIAH } from "@/utils/format";
 import Link from "next/link";
+import axios from "axios";
 ChartJS.register(ArcElement, Tooltip, Legend);
 type Stats = {
   balance: number;
@@ -14,23 +16,39 @@ type Stats = {
 };
 
 function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
+  const router = useRouter();
+
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
+  const deleteBudget = async (id: number) => {
+    try {
+      const { data } = await axios.delete(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/budget/${id}`
+      );
+      alert(data.message);
+      refreshData();
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error?.message);
+      }
+      console.log(error);
+    }
+  };
+
+  const calculatePercentage = (budget: number, spend: number) => {
+    let result = Math.floor((spend / budget) * 100);
+    if (result > 100) return 100;
+    return result;
+  };
+
   const data = {
     labels: budget.map((data) => data.category_name),
     datasets: [
       {
         label: "Total Budget",
         data: budget.map((data) => Number(data.budget)),
-        // backgroundColor: [
-        //   "rgba(255, 99, 132, 0.2)",
-        //   "rgba(54, 162, 235, 0.2)",
-        //   "rgba(255, 206, 86, 0.2)",
-        //   "rgba(75, 192, 192, 0.5)",
-        //   "rgba(153, 102, 255, 0.5)",
-        //   "rgba(255, 159, 64, 0.5)",
-        //   "rgba(34, 197, 94,0.5)",
-        //   "rgba(239, 68, 68, 0.5)",
-        //   "rgba(139, 92, 246, 0.5)",
-        // ],
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
@@ -52,10 +70,6 @@ function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
         position: "right",
       },
     },
-  };
-
-  const calculatePercentage = (budget: number, spend: number) => {
-    return Math.floor((spend / budget) * 100);
   };
 
   return (
@@ -97,7 +111,16 @@ function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
         </div>
         {budget &&
           budget.map((data, id) => (
-            <div key={id} className="p-6 bg-white rounded-xl shadow-sm">
+            <div
+              key={id}
+              className="relative p-6 bg-white rounded-xl shadow-sm"
+            >
+              <div
+                onClick={() => deleteBudget(data.budget_id)}
+                className="absolute p-2 cursor-pointer opacity-20 transition-all hover:opacity-80 top-0 right-0"
+              >
+                <Image src="/trash.svg" height={24} width={24} alt="trash" />
+              </div>
               <div className="w-full flex justify-between">
                 <div>
                   <h1 className="font-bold text-xl text-slate-900">
