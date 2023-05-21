@@ -47,7 +47,7 @@ function Navbar() {
           hideMenu(pathname) ? "hidden" : ""
         }`}
       >
-        <Menu route="auth/login">
+        <Menu route="inputtransaction">
           <Image src="/input.svg" height={20} width={20} alt="input" />
           <p>Input</p>
         </Menu>
