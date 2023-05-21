@@ -49,7 +49,7 @@ function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
     datasets: [
       {
         label: "Total Budget",
-        data: budget.map((data) => Number(data.budget)),
+        data: budget.map((data) => Number(data.spend)),
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
