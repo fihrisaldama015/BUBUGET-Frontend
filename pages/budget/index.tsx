@@ -48,7 +48,7 @@ function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
     labels: budget.map((data) => data.category_name),
     datasets: [
       {
-        label: "Total Budget",
+        label: "Total Spend",
         data: budget.map((data) => Number(data.spend)),
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
