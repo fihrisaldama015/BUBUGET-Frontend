@@ -2,7 +2,7 @@ import { AllTransaction, Transaction } from "@/pages/dashboard";
 import { RUPIAH } from "@/utils/format";
 import { useEffect, useState } from "react";
 
-type MonthTransaction = Record<string, Transaction[]>;
+export type MonthTransaction = Record<string, Transaction[]>;
 
 function MonthTransaction({
   transaction,
