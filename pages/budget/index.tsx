@@ -40,7 +40,7 @@ function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
 
   const calculatePercentage = (budget: number, spend: number) => {
     let result = Math.floor((spend / budget) * 100);
-    if (result > 100) return 100;
+    // if (result > 100) return 100;
     return result;
   };
 
@@ -48,7 +48,7 @@ function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
     labels: budget.map((data) => data.category_name),
     datasets: [
       {
-        label: "Total Budget",
+        label: "Total Spend",
         data: budget.map((data) => Number(data.spend)),
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
@@ -134,7 +134,7 @@ function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
                 <p className="flex items-center">
                   Rp
                   <span className="font-black text-3xl text-slate-900">
-                    {RUPIAH.format(data.budget)}
+                    {RUPIAH.format(data.budget - data.spend)}
                   </span>
                 </p>
               </div>
@@ -147,7 +147,11 @@ function Budget({ stats, budget }: { stats: Stats; budget: AllBudget }) {
                         : "bg-emerald-600"
                     }`}
                     style={{
-                      width: `${calculatePercentage(data.budget, data.spend)}%`,
+                      width: `${
+                        calculatePercentage(data.budget, data.spend) >= 100
+                          ? 100
+                          : calculatePercentage(data.budget, data.spend)
+                      }%`,
                     }}
                   ></div>
                 </div>
