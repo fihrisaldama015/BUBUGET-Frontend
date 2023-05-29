@@ -9,9 +9,10 @@ import UserInfo from "@/components/UserInfo";
 import UserStats from "@/components/UserStats";
 import DayTransaction from "@/components/DayTransaction";
 import MonthTransaction from "@/components/MonthTransaction";
+import ReportDownload from "@/components/ReportDownload";
 import Image from "next/image";
 
-type Stats = {
+export type Stats = {
   balance: number;
   income: number;
   expense: number;
@@ -42,6 +43,7 @@ function Dashboard({
   const [mode, setMode] = useState<"day" | "month">("day");
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
+  const [showExport, setShowExport] = useState<boolean>(false);
 
   const addMonth = () => {
     if (month === 11) {
@@ -71,61 +73,80 @@ function Dashboard({
   };
 
   return (
-    <div className="p-4 flex flex-col gap-4">
+    <div className="px-4 py-8 flex flex-col gap-8">
       <Head>
         <title>Dashboard | Bubuget</title>
       </Head>
-      <div className="px-4 flex gap-4">
-        <UserInfo userName={userName} balance={stats.balance} />
-        <div className="p-4 gap-4 flex flex-col justify-center">
-          <button
-            className={`p-1 flex justify-center rounded-lg bg-emerald-900/10  transition-all ${
-              validateMonth(month)
-                ? "cursor-pointer hover:bg-emerald-900/30"
-                : "cursor-not-allowed bg-transparent"
+      <div className="flex flex-col gap-4">
+        <div className="px-4 flex gap-4">
+          <UserInfo userName={userName} balance={stats.balance} />
+          <div className="p-4 gap-4 flex flex-col justify-center">
+            <button
+              className={`p-1 flex justify-center rounded-lg bg-emerald-900/10  transition-all ${
+                validateMonth(month)
+                  ? "cursor-pointer hover:bg-emerald-900/30"
+                  : "cursor-not-allowed bg-transparent"
+              }`}
+              disabled={!validateMonth(month)}
+              onClick={() => addMonth()}
+            >
+              <Image
+                src="/arrowDown.svg"
+                style={{ transform: "rotate(180deg)" }}
+                width={24}
+                height={24}
+                alt="arrow"
+              />
+            </button>
+            <DateString month={month} year={year} />
+            <button
+              className="p-1 flex justify-center rounded-lg bg-emerald-900/10 hover:bg-emerald-900/30 transition-all"
+              onClick={() => subMonth()}
+            >
+              <Image src="/arrowDown.svg" width={24} height={24} alt="arrow" />
+            </button>
+          </div>
+        </div>
+        <UserStats income={stats.income} expense={0} />
+      </div>
+      <div className="px-4 flex gap-8">
+        <div className="flex flex-1 bg-emerald-700 ring-2 ring-emerald-900/75 rounded-full shadow-sm">
+          <div
+            onClick={() => setMode("day")}
+            className={`flex-1 px-4 py-2 text-center cursor-pointer transition-all ${
+              mode === "day"
+                ? "bg-white rounded-full"
+                : "bg-emerald-700 rounded-l-full"
             }`}
-            disabled={!validateMonth(month)}
-            onClick={() => addMonth()}
           >
-            <Image
-              src="/arrowDown.svg"
-              style={{ transform: "rotate(180deg)" }}
-              width={24}
-              height={24}
-              alt="arrow"
-            />
-          </button>
-          <DateString month={month} year={year} />
-          <button
-            className="p-1 flex justify-center rounded-lg bg-emerald-900/10 hover:bg-emerald-900/30 transition-all"
-            onClick={() => subMonth()}
+            Daily
+          </div>
+          <div
+            onClick={() => setMode("month")}
+            className={`flex-1 px-4 py-2 text-center cursor-pointer transition-all ${
+              mode === "month"
+                ? "bg-white rounded-full"
+                : "bg-emerald-700 rounded-r-full"
+            }`}
           >
-            <Image src="/arrowDown.svg" width={24} height={24} alt="arrow" />
-          </button>
+            Monthly
+          </div>
+        </div>
+        <div
+          onClick={() => setShowExport((value) => !value)}
+          className="p-2 flex items-center justify-center w-12 h-12 ring-2 ring-emerald-900/75 rounded-full bg-emerald-900/20 cursor-pointer hover:bg-emerald-900/10 transition-all"
+        >
+          <Image src="/export.svg" width={17} height={26} alt="export" />
         </div>
       </div>
-      <UserStats income={stats.income} expense={0} />
-      <div className="flex bg-emerald-700 ring-1 ring-emerald-900/20 rounded-full shadow-sm">
-        <div
-          onClick={() => setMode("day")}
-          className={`flex-1 px-4 py-2 text-center cursor-pointer transition-all ${
-            mode === "day"
-              ? "bg-white rounded-full"
-              : "bg-emerald-700 rounded-l-full"
-          }`}
-        >
-          Daily
-        </div>
-        <div
-          onClick={() => setMode("month")}
-          className={`flex-1 px-4 py-2 text-center cursor-pointer transition-all ${
-            mode === "month"
-              ? "bg-white rounded-full"
-              : "bg-emerald-700 rounded-r-full"
-          }`}
-        >
-          Monthly
-        </div>
+      <div className={`${showExport ? "" : "hidden"}`}>
+        <ReportDownload
+          transaction={transaction}
+          stats={stats}
+          userName={userName}
+          month={month}
+          year={year}
+        />
       </div>
       {mode === "day" ? (
         <DayTransaction transaction={transaction} />
