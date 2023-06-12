@@ -102,7 +102,7 @@ function InputTransaction({
           <div className="grid mt-4">
             Tanggal
             <input
-              type="date"
+              type="datetime-local"
               id="date"
               placeholder="date"
               className="rounded-xl py-2 px-4 focus:outline-none"
