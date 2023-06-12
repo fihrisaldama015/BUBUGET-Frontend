@@ -107,7 +107,7 @@ function Dashboard({
             </button>
           </div>
         </div>
-        <UserStats income={stats.income} expense={0} />
+        <UserStats income={stats.income} expense={stats.expense} />
       </div>
       <div className="px-4 flex gap-8">
         <div className="flex flex-1 bg-emerald-700 ring-2 ring-emerald-900/75 rounded-full shadow-sm">
